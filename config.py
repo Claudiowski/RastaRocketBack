@@ -18,6 +18,8 @@ class Config:
     SMTP_SECURE = 'tls'
     SMTP_PORT = 587
     EMAIL_FROM = ''
+    ELS_HOST = 'localhost'
+    ELS_PORT = 9200
 
     @staticmethod
     def init_app(app):
