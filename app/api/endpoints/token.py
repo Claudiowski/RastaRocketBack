@@ -1,5 +1,5 @@
 from flask import g
-from flask_restplus import Namespace, Resource, fields, abort
+from flask_restplus import Namespace, Resource
 from flask_httpauth import HTTPBasicAuth
 from app.elastic import get_user_from_email
 from ..serializers import auth_token
@@ -66,4 +66,4 @@ class TokenResource(Resource):
 
         token = g.user.generate_auth_token()
 
-        return {'token': token}
+        return {'token': token.decode('ascii')}

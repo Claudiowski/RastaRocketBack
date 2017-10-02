@@ -29,3 +29,31 @@ def get_user_from_email(email, index='rastarockets_users'):
 
     else:
         return None
+
+
+def get_user_from_id(user_id, index='rastarockets_users'):
+    """
+    Return user from unique ID
+
+    :param user_id: User unique ID
+    :type user_id: str
+
+    :param index: Index name (optional)
+    :type index: str
+
+    :return: User if exist
+    :rtype: User|None
+    """
+
+    search = Search(
+        using=current_app.els_client,
+        index=index
+    ).query('term', _id=user_id)
+
+    response = search.execute()
+
+    if response.hits.total > 0:
+        return User(response.hits[0])
+
+    else:
+        return None
