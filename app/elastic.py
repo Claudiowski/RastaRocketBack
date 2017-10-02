@@ -1,5 +1,5 @@
 from flask import current_app
-from .models import User
+from .models import User, Need
 from elasticsearch_dsl import Search
 
 
@@ -57,3 +57,59 @@ def get_user_from_id(user_id, index='rastarockets_users'):
 
     else:
         return None
+
+
+def get_need_from_id(need_id, index='rastarockets_needs'):
+    """
+    Return need from unique ID
+    
+    :param need_id: Need unique ID
+    :type need_id: str
+    
+    :param index: Index name (optional)
+    :type index: str
+    
+    :return: Need if exist
+    :rtype: Need|None
+    """
+
+    search = Search(
+        using=current_app.els_client,
+        index=index
+    ).query('term', _id=need_id)
+
+    response = search.execute()
+
+    if response.hits.total > 0:
+        return Need(response.hits[0])
+
+    else:
+        return None
+
+
+def delete_need_from_id(need_id, index='rastarockets_needs'):
+    """
+    Delete need from unique ID
+
+    :param need_id: Need unique ID
+    :type need_id: str
+
+    :param index: Index name (optional)
+    :type index: str
+
+    :return: True if success, else False
+    :rtype: bool
+    """
+
+    response = current_app.els_client.delete_by_query(
+        index=index,
+        doc_type='need',
+        body={
+            'query': {
+                'term': {'_id': need_id}
+            }
+        }
+    )
+
+    # TODO get response value
+    return True

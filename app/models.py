@@ -20,6 +20,16 @@ class User:
         self._email = els_object.Email
         self._password_hash = els_object.PasswordHash
 
+    @property
+    def id(self):
+        """
+        Return user unique ID
+
+        :return: ID
+        :rtype: str
+        """
+        return self._id
+
     def hash_password(self, password):
         """
         Set new user passsword
@@ -82,3 +92,32 @@ class User:
             return None
 
         return data['id']
+
+    def __eq__(self, other):
+        return self._id == other.id
+
+
+class Need:
+    """
+    Represent customer need
+    """
+
+    def __init__(self, els_object):
+        """
+        Constructor
+
+        :param els_object: Elasticsearch object document
+        :type els_object: object
+        """
+
+        self._author = els_object.Author
+
+    @property
+    def author(self):
+        """
+        Return author of need
+
+        :return: Author of need
+        :rtype: User
+        """
+        return self._author
