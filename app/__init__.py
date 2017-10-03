@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from elasticsearch import Elasticsearch
-from flask import Flask
+from flask import Flask, request
 from flask_cors import CORS
 from config import config
 
@@ -31,8 +31,11 @@ def create_app(config_name='default'):
     @app.after_request
     def after_request(response):
         response.headers.add('Access-Control-Allow-Origin', '*')
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+        if request.method == 'OPTIONS':
+            response.headers['Access-Control-Allow-Methods'] = 'DELETE, GET, POST, PUT'
+            headers = request.headers.get('Access-Control-Request-Headers')
+            if headers:
+                response.headers['Access-Control-Allow-Headers'] = headers
         return response
 
     return app
