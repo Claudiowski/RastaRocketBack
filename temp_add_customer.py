@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from elasticsearch import Elasticsearch, helpers
 from elasticsearch_dsl import Search
 from config import config
