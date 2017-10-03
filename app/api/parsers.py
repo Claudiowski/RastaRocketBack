@@ -14,3 +14,10 @@ need_parser.add_argument('size', required=False, type=int, help='Number of needs
 
 customer_autocomplete_parser = api.parser()
 customer_autocomplete_parser.add_argument('name', required=True, help='Customer name')
+
+contact_autocomplete_parser = api.parser()
+contact_autocomplete_parser.add_argument('name', required=True, help='Contact name')
+contact_autocomplete_parser.add_argument('customer_id', required=False, help='Customer unique ID')
+
+name_autocomplete_parser = api.parser()
+name_autocomplete_parser.add_argument('name', required=True, help='Customer name')

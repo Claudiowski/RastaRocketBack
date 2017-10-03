@@ -18,7 +18,10 @@ class User:
         """
         self._id = els_object.meta.id
         self._email = els_object.Email
-        self._password_hash = els_object.PasswordHash
+        self._name = els_object.Name
+
+        if hasattr(els_object, 'PasswordHash'):
+            self._password_hash = els_object.PasswordHash
 
     @property
     def id(self):
@@ -29,6 +32,16 @@ class User:
         :rtype: str
         """
         return self._id
+
+    @property
+    def name(self):
+        """
+        Return user name
+
+        :return: User name
+        :rtype: str
+        """
+        return self._name
 
     def hash_password(self, password):
         """
@@ -121,3 +134,64 @@ class Need:
         :rtype: User
         """
         return self._author
+
+
+class Customer:
+    """
+    Represent customer
+    """
+
+    def __init__(self, els_object):
+        """
+        Constructor
+
+        :param els_object: Elasticsearch object document
+        :type els_object: object
+        """
+        self._name = els_object.Name
+
+    @property
+    def name(self):
+        """
+        Return customer name
+
+        :return: Customer name
+        :rtype: str
+        """
+        return self._name
+
+
+class CustomerContact:
+    """
+    Represent customer contact
+    """
+
+    def __init__(self, els_client):
+        """
+        Constructor
+
+        :param els_object: Elasticsearch object document
+        :type els_object: object
+        """
+        self._name = els_client.Name
+        self._email = els_client.Email
+
+    @property
+    def name(self):
+        """
+        Return contact name
+
+        :return: Contact name
+        :rtype: str
+        """
+        return self._name
+
+    @property
+    def email(self):
+        """
+        Return contact email
+
+        :return: Contact email
+        :rtype str
+        """
+        return self._email

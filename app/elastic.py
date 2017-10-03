@@ -1,5 +1,5 @@
 from flask import current_app
-from .models import User, Need
+from .models import User, Need, Customer, CustomerContact
 from elasticsearch_dsl import Search
 
 
@@ -113,3 +113,98 @@ def delete_need_from_id(need_id, index='rastarockets_needs'):
 
     # TODO get response value
     return True
+
+
+def get_possible_customers(prefix, index='rastarockets_customers'):
+    """
+    Return possible customers from prefix
+
+    :param prefix: Prefix of customer name
+    :type prefix: str
+
+    :param index: Index name (optional)
+    :type index: str
+
+    :return: List of possible customers
+    :rtype: list
+    """
+
+    customers = []
+
+    search = Search(
+        using=current_app.els_client,
+        index=index
+    ).query('match', Name=prefix)
+
+    response = search.execute()
+
+    for customer in response:
+        customers.append(Customer(customer))
+
+    return customers
+
+
+def get_possible_contacts(prefix, customer=None, index='rastarockets_customers'):
+    """
+    Return possible contacts from prefix
+
+    :param prefix: Prefix of contact name
+    :type prefix: str
+
+    :param customer: Customer ID
+    :type customer: str|None
+
+    :param index: Index name (optional)
+    :type index: str
+
+    :return: List of possible contacts
+    :rtype: list
+    """
+
+    contacts = []
+
+    search = Search(
+        using=current_app.els_client,
+        index=index,
+        doc_type='contact'
+    ).query('match', Name=prefix)
+
+    if customer is not None:
+        search = search.query('math_phrase', Customer=customer)
+
+    response = search.execute()
+
+    for contact in response:
+        contacts.append(CustomerContact(contact))
+
+    return contacts
+
+
+def get_possible_consultants(prefix, index='rastarockets_users'):
+    """
+    Return possible consultants from prefix
+
+    :param prefix: Prefix of consultant name
+    :type prefix: str
+
+    :param index: Index name (optional)
+    :type index: str
+
+    :return: List of possible consultants
+    :rtype: list
+    """
+
+    consultants = []
+
+    search = Search(
+        using=current_app.els_client,
+        index=index,
+        doc_type='user'
+    ).query('match', Name=prefix).query('match_phrase', Role='consultant')
+
+    response = search.execute()
+
+    for consultant in response:
+        consultants.append(User(consultant))
+
+    return consultants

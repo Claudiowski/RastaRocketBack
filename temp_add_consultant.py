@@ -1,6 +1,5 @@
 from elasticsearch import Elasticsearch
 from config import config
-from app.utils import hash_sha256
 
 
 if __name__ == '__main__':
@@ -17,23 +16,23 @@ if __name__ == '__main__':
                     "number_of_shards": 1,
                     "number_of_replicas": 0,
                     "analysis": {
-                      "filter": {
-                        "autocomplete_filter": {
-                          "type": "edge_ngram",
-                          "min_gram": 1,
-                          "max_gram": 20
+                        "filter": {
+                            "autocomplete_filter": {
+                                "type": "edge_ngram",
+                                "min_gram": 1,
+                                "max_gram": 20
+                            }
+                        },
+                        "analyzer": {
+                            "autocomplete": {
+                                "type": "custom",
+                                "tokenizer": "standard",
+                                "filter": [
+                                    "lowercase",
+                                    "autocomplete_filter"
+                                ]
+                            }
                         }
-                      },
-                      "analyzer": {
-                        "autocomplete": {
-                          "type": "custom",
-                          "tokenizer": "standard",
-                          "filter": [
-                            "lowercase",
-                            "autocomplete_filter"
-                          ]
-                        }
-                      }
                     }
                 },
                 "mappings": {
@@ -54,10 +53,9 @@ if __name__ == '__main__':
         )
 
     user = {
-        'Name': 'Arthur',
-        'Email': 'averdier@gfi.fr',
-        'PasswordHash': hash_sha256('averdier'),
-        'Role': 'commercial'
+        'Name': 'Robert Michu',
+        'Email': 'r.michu@gfi.fr',
+        'Role': 'consultant'
     }
 
     user_search = client.search(

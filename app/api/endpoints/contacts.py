@@ -1,13 +1,13 @@
 from flask import request, g, abort
 from flask_restplus import Namespace, Resource
 from flask_httpauth import HTTPTokenAuth
-from app.elastic import get_user_from_id, get_possible_customers
+from app.elastic import get_user_from_id, get_possible_contacts
 from app.models import User
-from ..serializers.customers import customer_data_container
-from ..parsers import customer_autocomplete_parser
+from ..serializers.customers import contact_data_container
+from ..parsers import contact_autocomplete_parser
 
 
-ns = Namespace('customers', description='Customers related operations')
+ns = Namespace('contacts', description='Contacts related operations')
 
 # ================================================================================================
 # AUTH
@@ -50,29 +50,30 @@ def verify_token(token):
 # ENDPOINTS
 # ================================================================================================
 #
-#   API customers endpoints
+#   API contacts endpoints
 #
 # ================================================================================================
 
 @ns.route('/')
-class CustomerAutocomplete(Resource):
+class ContactsAutocomplete(Resource):
     decorators = [auth.login_required]
 
-    @ns.marshal_with(customer_data_container)
-    @ns.expect(customer_autocomplete_parser)
+    @ns.marshal_with(contact_data_container)
+    @ns.expect(contact_autocomplete_parser)
     def get(self):
         """
-        Customers autocomplete
+        Contacts autocomplete
         """
 
-        args = customer_autocomplete_parser.parse_args()
+        args = contact_autocomplete_parser.parse_args()
 
         name_prefix = args.get('name')
+        customer_id = args.get('customer_id')
 
         if name_prefix is not None and name_prefix != '':
-            possible_customers = get_possible_customers(name_prefix)
+            possible_contacts = get_possible_contacts(name_prefix, customer_id)
 
-            return {'customers': possible_customers}
+            return {'contacts': possible_contacts}
 
         else:
             abort('400', error="name can't be empty")
