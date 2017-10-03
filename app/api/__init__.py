@@ -22,8 +22,10 @@ api = Api(blueprint,
           security='tokenKey'
           )
 
-from .endpoints.needs import ns as need_namespace
 from .endpoints.token import ns as token_namespace
+from .endpoints.needs import ns as needs_namespace
+from .endpoints.customers import ns as customers_namespace
 
-api.add_namespace(need_namespace)
 api.add_namespace(token_namespace)
+api.add_namespace(needs_namespace)
+api.add_namespace(customers_namespace)

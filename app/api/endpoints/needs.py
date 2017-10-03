@@ -7,7 +7,7 @@ from ..serializers.needs import need_post, need_minimal, need_data_container
 from ..parsers import need_parser
 
 
-ns = Namespace('need', description='Needs related operations')
+ns = Namespace('needs', description='Needs related operations')
 
 # ================================================================================================
 # AUTH
