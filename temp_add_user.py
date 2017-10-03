@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from elasticsearch import Elasticsearch
 from config import config
 from app.utils import hash_sha256

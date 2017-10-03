@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from flask import request, g
 from flask_restplus import Namespace, Resource, abort
 from flask_httpauth import HTTPTokenAuth

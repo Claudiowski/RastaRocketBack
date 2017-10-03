@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from elasticsearch import Elasticsearch
 from flask import Flask
 from config import config

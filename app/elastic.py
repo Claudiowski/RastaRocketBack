@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from flask import current_app
 from .models import User, Need, Customer, CustomerContact
 from elasticsearch_dsl import Search

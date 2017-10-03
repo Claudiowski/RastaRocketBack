@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from datetime import datetime
 from elasticsearch import Elasticsearch
 from config import config
