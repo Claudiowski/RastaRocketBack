@@ -87,6 +87,80 @@ def get_need_from_id(need_id, index='rastarockets_needs'):
         return None
 
 
+def get_needs(start, size, author_id=None, title=None, status=None, customer_id=None, index='rastarockets_needs'):
+    """
+    Return list of needs from parameters
+
+    :param start: Start index (pagination)
+    :type start: int
+
+    :param size: Number of needs (pagination)
+    :type size: int
+
+    :param author_id: Author ID of needs
+    :type author_id: str
+
+    :param title: Title of need (optional)
+    :type title: str
+
+    :param status: Status of need (optional)
+    :type status: str
+
+    :param customer_id: Customer unique ID (optional)
+    :type customer_id: str
+
+    :param index: Index name
+    :type index: str
+
+    :return: List of needs
+    :rtype: list
+    """
+
+    needs = []
+
+    search = Search(
+        using=current_app.els_client,
+        index=index,
+        doc_type='need'
+    )
+
+    if author_id is not None:
+        search = search.query('match_phrase', Author=author_id)
+
+    if title is not None:
+        search = search.query('match', Title=title)
+
+    if status is not None:
+        search = search.query('match_phrase', Status=status)
+
+    if customer_id is not None:
+        search = search.query('match_phrase', Customer=customer_id)
+
+    search = search[start, size]
+
+    response = search.execute()
+
+    for need in response:
+        needs.append(Need(need))
+
+    return needs
+
+
+def add_need_from_parameters(parameters):
+    """
+    Add need from parameters
+
+    :param parameters: Form parameters
+    :type parameters: dict
+
+    :return: Need created
+    :rtype: Need|None
+    """
+
+    # TODO save need
+    return None
+
+
 def delete_need_from_id(need_id, index='rastarockets_needs'):
     """
     Delete need from unique ID
@@ -113,6 +187,34 @@ def delete_need_from_id(need_id, index='rastarockets_needs'):
 
     # TODO get response value
     return True
+
+
+def get_customer_from_id(customer_id, index='rastarockets_customers'):
+    """
+    Return customer from unique ID
+
+    :param customer_id: Customer unique ID
+    :type customer_id: str
+
+    :param index: Index name (optional)
+    :type index: str
+
+    :return: Customer if exist
+    :rtype: Customer|None
+    """
+    search = Search(
+        using=current_app.els_client,
+        index=index,
+        doc_type='customer'
+    ).query('term', _id=customer_id)
+
+    response = search.execute()
+
+    if response.hits.total > 0:
+        return Customer(response.hits[0])
+
+    else:
+        return None
 
 
 def get_possible_customers(prefix, index='rastarockets_customers'):
@@ -144,6 +246,34 @@ def get_possible_customers(prefix, index='rastarockets_customers'):
     return customers
 
 
+def get_contact_from_id(contact_id, index='rastarockets_customers'):
+    """
+    Return contact from unique ID
+
+    :param contact_id: Contact unique ID
+    :type contact_id: str
+
+    :param index: Index name (optional)
+    :type index: str
+
+    :return: Contact if exist
+    :rtype: Contact|None
+    """
+    search = Search(
+        using=current_app.els_client,
+        index=index,
+        doc_type='contact'
+    ).query('term', _id=contact_id)
+
+    response = search.execute()
+
+    if response.hits.total > 0:
+        return CustomerContact(response.hits[0])
+
+    else:
+        return None
+
+
 def get_possible_contacts(prefix, customer=None, index='rastarockets_customers'):
     """
     Return possible contacts from prefix
@@ -170,7 +300,7 @@ def get_possible_contacts(prefix, customer=None, index='rastarockets_customers')
     ).query('match', Name=prefix)
 
     if customer is not None:
-        search = search.query('math_phrase', Customer=customer)
+        search = search.query('match_phrase', Customer=customer)
 
     response = search.execute()
 
@@ -178,6 +308,34 @@ def get_possible_contacts(prefix, customer=None, index='rastarockets_customers')
         contacts.append(CustomerContact(contact))
 
     return contacts
+
+
+def get_consultant_from_id(consultant_id, index='rastarockets_users'):
+    """
+    Return consultant from unique ID
+
+    :param consultant_id: Consultant unique ID
+    :type consultant_id: str
+
+    :param index: Index name (optional)
+    :type index: str
+
+    :return: User if exist
+    :rtype: User|None
+    """
+    search = Search(
+        using=current_app.els_client,
+        index=index,
+        doc_type='user'
+    ).query('term', _id=consultant_id).query('match_phrase', Role='consultant')
+
+    response = search.execute()
+
+    if response.hits.total > 0:
+        return User(response.hits[0])
+
+    else:
+        return None
 
 
 def get_possible_consultants(prefix, index='rastarockets_users'):

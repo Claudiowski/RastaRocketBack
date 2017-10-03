@@ -148,7 +148,18 @@ class Customer:
         :param els_object: Elasticsearch object document
         :type els_object: object
         """
+        self._id = els_object.meta.id
         self._name = els_object.Name
+
+    @property
+    def id(self):
+        """
+        Return customer ID
+
+        :return: Customer ID
+        :rtype: str
+        """
+        return self._id
 
     @property
     def name(self):
@@ -166,15 +177,26 @@ class CustomerContact:
     Represent customer contact
     """
 
-    def __init__(self, els_client):
+    def __init__(self, els_object):
         """
         Constructor
 
         :param els_object: Elasticsearch object document
         :type els_object: object
         """
-        self._name = els_client.Name
-        self._email = els_client.Email
+        self._id = els_object.meta.id
+        self._name = els_object.Name
+        self._email = els_object.Email
+
+    @property
+    def id(self):
+        """
+        Return contact unique ID
+
+        :return: Contact unique ID
+        :rtype: str
+        """
+        return self._id
 
     @property
     def name(self):
