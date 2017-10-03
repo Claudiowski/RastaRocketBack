@@ -2,6 +2,7 @@
 
 from elasticsearch import Elasticsearch
 from flask import Flask
+from flask_cors import CORS
 from config import config
 
 els_client = None
@@ -17,6 +18,8 @@ def create_app(config_name='default'):
     from .api import blueprint as api_blueprint
 
     app = Flask(__name__)
+    CORS(app)
+
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
     app.els_client = Elasticsearch([{'host': config[config_name].ELS_HOST, 'port': config[config_name].ELS_PORT}])

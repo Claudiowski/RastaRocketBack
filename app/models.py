@@ -273,3 +273,50 @@ class CustomerContact:
         :rtype str
         """
         return self._email
+
+
+class NeedContent:
+    """
+    Represent file of need
+    """
+
+    def __init__(self, els_object):
+        """
+        Constructor
+
+        :param els_object: Elasticsearch object document
+        :type els_object: object
+        """
+        self._id = els_object.meta.id
+        self._need = els_object.Need
+        self._filename = els_object.Filename
+
+    @property
+    def id(self):
+        """
+        Return need content ID
+
+        :return: Need content ID
+        :rtype: str
+        """
+        return self._id
+
+    @property
+    def need(self):
+        """
+        Return need
+
+        :return: Need ID
+        :rtype: str
+        """
+        return self._need
+
+    @property
+    def filename(self):
+        """
+        Return filename
+
+        :return: Filename
+        :rtype: str
+        """
+        return self._filename

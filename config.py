@@ -22,6 +22,8 @@ class Config:
     EMAIL_FROM = ''
     ELS_HOST = 'localhost'
     ELS_PORT = 9200
+    UPLOAD_FOLDER = os.path.join(basedir, 'upload')
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
     @staticmethod
     def init_app(app):

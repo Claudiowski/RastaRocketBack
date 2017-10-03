@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
 
+import os
 from datetime import datetime
 
-from flask import request, g
+from flask import request, g, current_app, send_from_directory
 from flask_httpauth import HTTPTokenAuth
 from flask_restplus import Namespace, Resource, abort
 
 from app.elastic import get_user_from_id, get_need_from_id, delete_need_from_id, get_needs, get_customer_from_id, \
-    get_contact_from_id, get_consultant_from_id, add_need_from_parameters, update_need
+    get_contact_from_id, get_consultant_from_id, add_need_from_parameters, update_need, add_need_content, \
+    get_need_content_from_id, delete_need_content_from_id
 
 from app.models import User
-from ..parsers import need_parser
+from app.utils import allowed_file
+from ..parsers import need_parser, upload_parser
 from ..serializers.needs import need_post, need_put, need_minimal, need_data_container
 
 ns = Namespace('needs', description='Needs related operations')
@@ -80,7 +83,7 @@ class NeedCollection(Resource):
         customer_id = args.get('customer')
 
         needs = get_needs(start, size, g.user.id, title, status, customer_id)
-        
+
         return {'needs': needs}
 
     @ns.marshal_with(need_minimal, code=201, description='Need successfully created.')
@@ -185,3 +188,72 @@ class NeedItem(Resource):
 
         else:
             abort(400, error='Unable to deleted need #{0}'.format(need_id))
+
+
+@ns.route('/<need_id>/contents')
+@ns.response(404, 'Need not found')
+class NeedContentCollection(Resource):
+    decorators = [auth.login_required]
+
+    @ns.marshal_with(need_minimal, code=201, description='Content successfully uploaded.')
+    @ns.doc(responses={
+        400: 'Validation error'
+    })
+    @ns.expect(upload_parser)
+    def post(self, need_id):
+        """
+        Upload need content
+        """
+
+        need = get_need_from_id(need_id)
+        if not need or need.author != g.user.id:
+            abort(404)
+
+        args = upload_parser.parse_args()
+        file = args['file']
+
+        if not allowed_file(current_app, file.filename):
+            abort(400, error='File not allowed')
+
+        path = os.path.join(current_app.UPLOAD_FOLDER, file.filename)
+
+        if os.path.exists(path):
+            abort(400, error='File {0} already exist'.format(file.filename))
+
+        file.save(os.path.join(current_app.UPLOAD_FOLDER, file.filename))
+
+        content = add_need_content(need.id, file.filename)
+
+        if content:
+            return content, 201
+
+        else:
+            os.remove(path)
+            abort(400, error='Unable to save content')
+
+
+@ns.route('/<need_id>/contents/<content_id>')
+@ns.response(404, 'Need content not found')
+class NeedContentItem(Resource):
+    decorators = [auth.login_required]
+
+    def get(self, need_id, content_id):
+        """
+        Return need content
+        """
+
+        need = get_need_from_id(need_id)
+        if not need or need.author != g.user.id:
+            abort(404)
+
+        content = get_need_content_from_id(content_id)
+        if not content or content.need != need.id:
+            abort(404)
+
+        path = os.path.join(current_app.UPLOAD_FOLDER, content.filename)
+
+        if not os.path.exists(path) or not os.path.isfile(path):
+            delete_need_content_from_id(content.id)
+            abort(400, error='Need have no content')
+
+        return send_from_directory(current_app.UPLOAD_FOLDER, content.filename)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import current_app
-from .models import User, Need, Customer, CustomerContact
+from .models import User, Need, Customer, CustomerContact, NeedContent
 from elasticsearch_dsl import Search
 
 
@@ -210,6 +210,76 @@ def add_need_from_parameters(parameters, index='rastarockets_needs'):
         return get_need_from_id(response['_id'])
 
     return None
+
+
+def get_need_content_from_id(content_id, index='rastarockets_needs'):
+    """
+    Return need content from unique ID
+
+    :param content_id: Need content unique ID
+    :type content_id: str
+
+    :param index: Index name (optional)
+    :type index: str
+
+    :return: NeedContent if exist
+    :rtype: NeedContent|None
+    """
+    search = Search(
+        using=current_app.els_client,
+        index=index,
+        doc_type='content'
+    ).query('term', _id=content_id)
+
+    response = search.execute()
+    if response.hits.total > 0:
+        return NeedContent(response.hits[0])
+
+    else:
+        return None
+
+
+def add_need_content(need_id, filename, index='rastarockets_needs'):
+    response = current_app.els_client.index(
+        index=index,
+        doc_type='content',
+        body={
+            'Need': need_id,
+            'Filename': filename
+        }
+    )
+
+    if response['result'] == 'created':
+        current_app.els_client.indices.refresh(index=index)
+        return get_need_content_from_id(response['_id'])
+
+    return None
+
+
+def delete_need_content_from_id(content_id, index='rastarockets_needs'):
+    """
+    Delete need content from unique ID
+
+    :param content_id: Need content unique ID
+    :type content_id: str
+
+    :param index: Index name (optional)
+    :type index: str
+
+    :return: True if success, else False
+    :rtype: bool
+    """
+
+    response = current_app.els_client.delete_by_query(
+        index=index,
+        doc_type='content',
+        body={
+            'query': {
+                'term': {'_id': content_id}
+            }
+        }
+    )
+    return response['deleted'] > 0
 
 
 def update_need(need_id, parameters, index='rastarockets_needs'):
