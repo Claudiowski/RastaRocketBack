@@ -18,7 +18,7 @@ def create_app(config_name='default'):
     from .api import blueprint as api_blueprint
 
     app = Flask(__name__)
-    CORS(app)
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
 
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
