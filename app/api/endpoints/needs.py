@@ -1,8 +1,8 @@
 from datetime import datetime
 
-from flask import request, g, abort
+from flask import request, g
 from flask_httpauth import HTTPTokenAuth
-from flask_restplus import Namespace, Resource
+from flask_restplus import Namespace, Resource, abort
 
 from app.elastic import get_user_from_id, get_need_from_id, delete_need_from_id, get_needs, get_customer_from_id, \
     get_contact_from_id, get_consultant_from_id, add_need_from_parameters
@@ -71,11 +71,11 @@ class NeedCollection(Resource):
 
         args = need_parser.parse_args()
         size = args.get('size') if args.get('size') else 20
-        start = args.get('page') * size if args('page') else 0
+        start = args.get('page') * size if args.get('page') else 0
 
         title = args.get('title')
         status = args.get('status')
-        customer_id = args('customer')
+        customer_id = args.get('customer')
 
         needs = get_needs(start, size, g.user.id, title, status, customer_id)
         
@@ -109,8 +109,11 @@ class NeedCollection(Resource):
         if data.get('status') not in ['open', 'win', 'lost']:
             abort(400, error='Invalid status choice')
 
-        print(data)
+        data['author'] = g.user.id
+
         need = add_need_from_parameters(data)
+
+        print(need)
 
         if not need:
             abort(400, error='Error during save need')

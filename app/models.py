@@ -122,18 +122,72 @@ class Need:
         :param els_object: Elasticsearch object document
         :type els_object: object
         """
-
+        self._id = els_object.meta.id
         self._author = els_object.Author
+        self._title = els_object.Title
+        self._created_at = els_object.CreatedAt
+        self._contact = els_object.Contact
+        self._customer = els_object.Customer
+
+    @property
+    def id(self):
+        """
+        Return need unique ID
+
+        :return: ID
+        :rtype: str
+        """
+        return self._id
 
     @property
     def author(self):
         """
         Return author of need
 
-        :return: Author of need
-        :rtype: User
+        :return: Author ID
+        :rtype: str
         """
         return self._author
+
+    @property
+    def created_at(self):
+        """
+        Return date of creation
+
+        :return: Date of creation
+        :rtype: str
+        """
+        return self._created_at
+
+    @property
+    def customer(self):
+        """
+        Return customer of need
+
+        :return: Customer
+        :rtype: str
+        """
+        return self._customer
+
+    @property
+    def contact(self):
+        """
+        Return contact of need
+
+        :return: Contact
+        :rtype: str
+        """
+        return self._contact
+
+    @property
+    def title(self):
+        """
+        Return title of need
+
+        :return: Title
+        :rtype: str
+        """
+        return self._title
 
 
 class Customer:

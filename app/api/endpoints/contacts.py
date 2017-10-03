@@ -1,5 +1,5 @@
-from flask import request, g, abort
-from flask_restplus import Namespace, Resource
+from flask import request, g
+from flask_restplus import Namespace, Resource, abort
 from flask_httpauth import HTTPTokenAuth
 from app.elastic import get_user_from_id, get_possible_contacts
 from app.models import User

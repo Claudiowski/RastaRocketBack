@@ -72,14 +72,13 @@ def get_need_from_id(need_id, index='rastarockets_needs'):
     :return: Need if exist
     :rtype: Need|None
     """
-
     search = Search(
         using=current_app.els_client,
-        index=index
+        index=index,
+        doc_type='need'
     ).query('term', _id=need_id)
 
     response = search.execute()
-
     if response.hits.total > 0:
         return Need(response.hits[0])
 
@@ -136,7 +135,7 @@ def get_needs(start, size, author_id=None, title=None, status=None, customer_id=
     if customer_id is not None:
         search = search.query('match_phrase', Customer=customer_id)
 
-    search = search[start, size]
+    search = search[start:size]
 
     response = search.execute()
 
@@ -146,18 +145,68 @@ def get_needs(start, size, author_id=None, title=None, status=None, customer_id=
     return needs
 
 
-def add_need_from_parameters(parameters):
+def add_need_from_parameters(parameters, index='rastarockets_needs'):
     """
     Add need from parameters
 
     :param parameters: Form parameters
     :type parameters: dict
 
-    :return: Need created
-    :rtype: Need|None
+    :param index: Index name (optional)
+    :type index: str
+
+    :return: Need ID created
+    :rtype: str|None
     """
 
-    # TODO save need
+    body = {
+        'CreatedAt': parameters.get('created_at'),
+        'Customer': parameters.get('customer'),
+        'Contact': parameters.get('contact'),
+        'Author': parameters.get('author'),
+        'Title': parameters.get('title'),
+        'Description': parameters.get('description'),
+        'Status': parameters.get('status')
+    }
+
+    if parameters.get('success_keys'):
+        body['SuccessKeys'] = []
+        for key in parameters.get('success_keys'):
+            body['SuccessKeys'].append({
+                'key': key
+            })
+
+    if parameters.get('start_at_latest'):
+        body['StartAtLatest'] = parameters.get('start_at_latest')
+
+    if parameters.get('month_duration'):
+        body['MonthDuration'] = parameters.get('month_duration')
+
+    if parameters.get('week_frequency'):
+        body['WeekFrequency'] = parameters.get('week_frequency')
+
+    if parameters.get('rate'):
+        body['Rate'] = parameters.get('rate')
+
+    consultants = parameters.get('consultants')
+    if consultants and len(consultants) > 0:
+        body['Consultants'] = []
+
+        for consultant in consultants:
+            body['Consultants'].append({
+                'id': consultant
+            })
+
+    response = current_app.els_client.index(
+        index=index,
+        doc_type='need',
+        body=body
+    )
+
+    if response['result'] == 'created':
+        current_app.els_client.indices.refresh(index=index)
+        return get_need_from_id(response['_id'])
+
     return None
 
 
@@ -184,9 +233,7 @@ def delete_need_from_id(need_id, index='rastarockets_needs'):
             }
         }
     )
-
-    # TODO get response value
-    return True
+    return response['deleted'] > 0
 
 
 def get_customer_from_id(customer_id, index='rastarockets_customers'):

@@ -1,6 +1,7 @@
 from datetime import datetime
 from elasticsearch import Elasticsearch
 from config import config
+import json
 
 
 if __name__ == '__main__':
@@ -66,5 +67,28 @@ if __name__ == '__main__':
         'CreatedAt': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S'),
         'Customer': 'AV7hICkGL6CcnUT1H2Gf',
         'Contact': 'AV7hID2XL6CcnUT1H2Gq',
-        'Author': 'AV7hRlqWL6CcnUT1H2Gt'
+        'Author': 'AV7hRlqWL6CcnUT1H2Gt',
+        'Title': 'My First need',
+        'Description': 'My first need description',
+        'SuccessKeys': [
+            {'Key': 'Hard work'},
+            {'Key': 'Good frequency'},
+            {'Key': 'Coffee, lot of coffee'}
+        ],
+        'StartAtLatest': '2017-10-08T00:00:00',
+        'MonthDuration': 0.5,
+        'WeekFrequency': 5,
+        'Rate': 10000.0,
+        'Consultants': [
+            {'Id': 'AV7hRneLL6CcnUT1H2Gu'}
+        ],
+        'Status': 'open'
     }
+
+    response = client.index(
+        index=indice,
+        doc_type='need',
+        body=need
+    )
+
+    print(json.dumps(response, indent=4))
