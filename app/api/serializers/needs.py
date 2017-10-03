@@ -24,7 +24,20 @@ need_post = api.model('Need POST', {
     'consultants': fields.List(fields.String(description='Consultant name', min_length=3, max_length=64),
                                description='Consultants unique ID', max_items=5),
     'status': fields.String(required=True, description='Need status (Open, Win, Lost)', min_length=3, max_length=64)
+})
 
+need_put = api.model('Need PUT', {
+    'title': fields.String(required=False, description='Need title', min_length=3, max_length=64),
+    'description': fields.String(required=False, description='Need description'),
+    'success_keys': fields.List(fields.String(description='Key of success', min_length=3, max_length=64),
+                                description='Keys of need success', max_items=3),
+    'start_at_latest': fields.DateTime(dt_format='iso8601', required=False, description='Start at latest datetime'),
+    'month_duration': fields.Float(required=False, description='Month duration', min=0),
+    'week_frequency': fields.Float(required=False, description='Week frequency', min=0),
+    'rate': fields.Float(required=False, description='HT price', min=0),
+    'consultants': fields.List(fields.String(description='Consultant name', min_length=3, max_length=64),
+                               description='Consultants unique ID', max_items=5),
+    'status': fields.String(required=False, description='Need status (Open, Win, Lost)', min_length=3, max_length=64)
 })
 
 need_data_container = api.model('Need DataContainer', {

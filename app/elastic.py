@@ -210,6 +210,69 @@ def add_need_from_parameters(parameters, index='rastarockets_needs'):
     return None
 
 
+def update_need(need_id, parameters, index='rastarockets_needs'):
+    """
+    Update need
+
+    :param need_id: Need unique ID
+    :type need_id: str
+
+    :param parameters: Need parameters
+    :type parameters: dict
+
+    :param index: Index name (optional)
+    :type index: str
+    """
+
+    body = {}
+
+    if parameters.get('title'):
+        body['Title'] = parameters.get('title')
+
+    if parameters.get('description'):
+        body['Description'] = parameters.get('description')
+
+    if parameters.get('success_keys'):
+        body['SuccessKeys'] = []
+        for key in parameters.get('success_keys'):
+            body['SuccessKeys'].append({
+                'key': key
+            })
+
+    if parameters.get('start_at_latest'):
+        body['StartAtLatest'] = parameters.get('start_at_latest')
+
+    if parameters.get('month_duration'):
+        body['MonthDuration'] = parameters.get('month_duration')
+
+    if parameters.get('week_frequency'):
+        body['WeekFrequency'] = parameters.get('week_frequency')
+
+    if parameters.get('rate'):
+        body['Rate'] = parameters.get('rate')
+
+    consultants = parameters.get('consultants')
+    if consultants and len(consultants) > 0:
+        body['Consultants'] = []
+
+        for consultant in consultants:
+            body['Consultants'].append({
+                'id': consultant
+            })
+
+    if parameters.get('status'):
+        body['Status'] = parameters.get('status')
+
+    response = current_app.els_client.update(
+        index=index,
+        doc_type='need',
+        id=need_id,
+        body={'doc': body}
+    )
+
+    return response['result'] == 'updated'
+
+
 def delete_need_from_id(need_id, index='rastarockets_needs'):
     """
     Delete need from unique ID

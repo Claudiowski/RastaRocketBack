@@ -5,11 +5,11 @@ from flask_httpauth import HTTPTokenAuth
 from flask_restplus import Namespace, Resource, abort
 
 from app.elastic import get_user_from_id, get_need_from_id, delete_need_from_id, get_needs, get_customer_from_id, \
-    get_contact_from_id, get_consultant_from_id, add_need_from_parameters
+    get_contact_from_id, get_consultant_from_id, add_need_from_parameters, update_need
 
 from app.models import User
 from ..parsers import need_parser
-from ..serializers.needs import need_post, need_minimal, need_data_container
+from ..serializers.needs import need_post, need_put, need_minimal, need_data_container
 
 ns = Namespace('needs', description='Needs related operations')
 
@@ -113,8 +113,6 @@ class NeedCollection(Resource):
 
         need = add_need_from_parameters(data)
 
-        print(need)
-
         if not need:
             abort(400, error='Error during save need')
 
@@ -134,7 +132,7 @@ class NeedItem(Resource):
         """
 
         need = get_need_from_id(need_id)
-        if not need:
+        if not need or need.author != g.user.id:
             abort(404)
 
         return need
@@ -144,17 +142,31 @@ class NeedItem(Resource):
         409: 'Value exist',
         400: 'Validation error'
     })
-    @ns.expect(need_post)
+    @ns.expect(need_put)
     def put(self, need_id):
         """
         Update need
         """
 
         need = get_need_from_id(need_id)
-        if not need:
+        if not need or need.author != g.user.id:
             abort(404)
 
-        return 'Need successfully updated.', 204
+        data = request.json
+
+        consultants = data.get('consultants')
+        if consultants and len(consultants) > 0:
+            for consultant in consultants:
+                if not get_consultant_from_id(consultant):
+                    abort(400, error='Consultant not found')
+
+        if data.get('status') and data.get('status') not in ['open', 'win', 'lost']:
+            abort(400, error='Invalid status choice')
+
+        if update_need(need_id, data):
+            return 'Need successfully updated.', 204
+        else:
+            abort(400, error='Unable to update need.')
 
     @ns.response(204, 'Need successfully deleted.')
     def delete(self, need_id):
@@ -163,7 +175,7 @@ class NeedItem(Resource):
         """
 
         need = get_need_from_id(need_id)
-        if not need:
+        if not need or need.author != g.user.id:
             abort(404)
 
         if delete_need_from_id(need_id):
