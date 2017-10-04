@@ -175,7 +175,7 @@ def add_need_from_parameters(parameters, index='rastarockets_needs'):
         body['SuccessKeys'] = []
         for key in parameters.get('success_keys'):
             body['SuccessKeys'].append({
-                'key': key
+                'Key': key
             })
 
     if parameters.get('start_at_latest'):
@@ -196,7 +196,7 @@ def add_need_from_parameters(parameters, index='rastarockets_needs'):
 
         for consultant in consultants:
             body['Consultants'].append({
-                'id': consultant
+                'Id': consultant
             })
 
     response = current_app.els_client.index(
@@ -456,15 +456,15 @@ def get_contact_from_id(contact_id, index='rastarockets_customers'):
         return None
 
 
-def get_possible_contacts(prefix, customer=None, index='rastarockets_customers'):
+def get_possible_contacts(prefix, customer_id=None, index='rastarockets_customers'):
     """
     Return possible contacts from prefix
 
     :param prefix: Prefix of contact name
     :type prefix: str
 
-    :param customer: Customer ID
-    :type customer: str|None
+    :param customer_id: Customer ID
+    :type customer_id: str|None
 
     :param index: Index name (optional)
     :type index: str
@@ -481,8 +481,8 @@ def get_possible_contacts(prefix, customer=None, index='rastarockets_customers')
         doc_type='contact'
     ).query('match', Name=prefix)
 
-    if customer is not None:
-        search = search.query('match_phrase', Customer=customer)
+    if customer_id is not None:
+        search = search.query('match_phrase', Customer=customer_id)
 
     response = search.execute()
 

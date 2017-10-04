@@ -5,10 +5,12 @@ from app.api import api
 
 need_minimal = api.model('Need Minimal', {
     'id': fields.String(required=True, description='Need unique ID'),
-    'created_at': fields.DateTime(dt_format='iso8601', required=False, description='Need creation datetime (iso8601)'),
+    'created_at': fields.DateTime(dt_format='iso8601', required=False, description='Need creation datetime'),
     'customer': fields.String(required=True, description='Customer unique name', min_length=3, max_length=64),
     'contact': fields.String(required=True, description='Customer contact name', min_length=3, max_length=64),
     'title': fields.String(required=True, description='Need title', min_length=3, max_length=64),
+    'start_at_latest': fields.String(required=False, dt_format='iso8601', description='Need start at latest date'),
+    'status': fields.String(required=True, description='Need status (open, win, lost)')
 })
 
 need_post = api.model('Need POST', {

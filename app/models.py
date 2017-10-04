@@ -130,6 +130,12 @@ class Need:
         self._created_at = els_object.CreatedAt
         self._contact = els_object.Contact
         self._customer = els_object.Customer
+        self._status = els_object.Status
+
+        if hasattr(els_object, 'StartAtLatest'):
+            self._start_at_latest = els_object.StartAtLatest
+        else:
+            self._start_at_latest = None
 
     @property
     def id(self):
@@ -162,6 +168,16 @@ class Need:
         return self._created_at
 
     @property
+    def start_at_latest(self):
+        """
+        Return start at latest date
+
+        :return: Start at latest date
+        :rtype: str
+        """
+        return self._start_at_latest
+
+    @property
     def customer(self):
         """
         Return customer of need
@@ -190,6 +206,16 @@ class Need:
         :rtype: str
         """
         return self._title
+
+    @property
+    def status(self):
+        """
+        return status of need
+
+        :return: Status
+        :rtype: str
+        """
+        return self._status
 
 
 class Customer:
