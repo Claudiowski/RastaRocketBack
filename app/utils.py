@@ -66,4 +66,4 @@ def allowed_file(config, filename):
     :rtype: bool
     """
     return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in config.ALLOWED_EXTENSIONS
+           filename.rsplit('.', 1)[1].lower() in config

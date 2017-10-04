@@ -212,15 +212,15 @@ class NeedContentCollection(Resource):
         args = upload_parser.parse_args()
         file = args['file']
 
-        if not allowed_file(current_app, file.filename):
+        if not allowed_file(current_app.config['ALLOWED_EXTENSIONS'], file.filename):
             abort(400, error='File not allowed')
 
-        path = os.path.join(current_app.UPLOAD_FOLDER, file.filename)
+        path = os.path.join(current_app.config['UPLOAD_FOLDER'], file.filename)
 
         if os.path.exists(path):
             abort(400, error='File {0} already exist'.format(file.filename))
 
-        file.save(os.path.join(current_app.UPLOAD_FOLDER, file.filename))
+        file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], file.filename))
 
         content = add_need_content(need.id, file.filename)
 
@@ -254,20 +254,20 @@ class NeedContentItem(Resource):
         if not content or content.need != need.id:
             abort(404)
 
-        path = os.path.join(current_app.UPLOAD_FOLDER, content.filename)
+        path = os.path.join(current_app.config['UPLOAD_FOLDER'], content.filename)
 
         if not os.path.exists(path) or not os.path.isfile(path):
             delete_need_content_from_id(content.id)
             abort(400, error='Need have no content')
 
-        return send_from_directory(current_app.UPLOAD_FOLDER, content.filename)
+        return send_from_directory(current_app.config['UPLOAD_FOLDER'], content.filename)
 
     @ns.response(204, 'Need content successfully deleted')
     def delete(self, need_id, content_id):
         """
         Delete need content
         """
-        
+
         need = get_need_from_id(need_id)
         if not need or need.author != g.user.id:
             abort(404)
@@ -276,7 +276,7 @@ class NeedContentItem(Resource):
         if not content or content.need != need.id:
             abort(404)
 
-        path = os.path.join(current_app.UPLOAD_FOLDER, content.filename)
+        path = os.path.join(current_app.config['UPLOAD_FOLDER'], content.filename)
 
         if os.path.exists(path):
             os.remove(path)
