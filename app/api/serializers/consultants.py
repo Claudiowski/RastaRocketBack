@@ -5,6 +5,7 @@ from app.api import api
 
 
 consultant_minimal = api.model('Consultant Minimal', {
+    'id': fields.String(required=True, description='Consultant unique ID'),
     'name': fields.String(required=True, description='Consultant name', min_length=3, max_length=64),
 })
 
