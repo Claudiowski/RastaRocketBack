@@ -107,9 +107,10 @@ class NeedCollection(Resource):
         if not get_contact_from_id(data.get('contact')):
             abort(400, error='Contact not found')
 
-        for consultant in data.get('consultants'):
-            if not get_consultant_from_id(consultant):
-                abort(400, error='Consultant not found')
+        if data.get('consultants'):
+            for consultant in data.get('consultants'):
+                if not get_consultant_from_id(consultant):
+                    abort(400, error='Consultant not found')
 
         if data.get('status') not in ['open', 'win', 'lost']:
             abort(400, error='Invalid status choice')
