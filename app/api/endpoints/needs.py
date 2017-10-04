@@ -237,6 +237,10 @@ class NeedContentCollection(Resource):
 class NeedContentItem(Resource):
     decorators = [auth.login_required]
 
+    @ns.doc(responses={
+        200: 'Success',
+        400: 'Need have no content'
+    })
     def get(self, need_id, content_id):
         """
         Return need content
@@ -257,3 +261,26 @@ class NeedContentItem(Resource):
             abort(400, error='Need have no content')
 
         return send_from_directory(current_app.UPLOAD_FOLDER, content.filename)
+
+    @ns.response(204, 'Need content successfully deleted')
+    def delete(self, need_id, content_id):
+        """
+        Delete need content
+        """
+        
+        need = get_need_from_id(need_id)
+        if not need or need.author != g.user.id:
+            abort(404)
+
+        content = get_need_content_from_id(content_id)
+        if not content or content.need != need.id:
+            abort(404)
+
+        path = os.path.join(current_app.UPLOAD_FOLDER, content.filename)
+
+        if os.path.exists(path):
+            os.remove(path)
+
+        delete_need_content_from_id(content.id)
+
+        return 'Need content successfully deleted', 201
