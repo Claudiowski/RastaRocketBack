@@ -417,7 +417,8 @@ def get_possible_customers(prefix, index='rastarockets_customers'):
 
     search = Search(
         using=current_app.els_client,
-        index=index
+        index=index,
+        doc_type='customer'
     ).query('match', Name=prefix)
 
     response = search.execute()
