@@ -21,6 +21,7 @@ class User:
         self._id = els_object.meta.id
         self._email = els_object.Email
         self._name = els_object.Name
+        self._role = els_object.Role
 
         if hasattr(els_object, 'PasswordHash'):
             self._password_hash = els_object.PasswordHash
@@ -44,6 +45,16 @@ class User:
         :rtype: str
         """
         return self._name
+
+    @property
+    def role(self):
+        """
+        Return role of user
+
+        :return: Role
+        :rtype: role
+        """
+        return self._role
 
     def hash_password(self, password):
         """

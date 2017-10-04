@@ -5,7 +5,7 @@ from flask_httpauth import HTTPTokenAuth
 from flask_restplus import Resource
 from app.elastic import get_user_from_id
 from app.models import User
-from app.api import api
+from app.private import api
 
 ns = api.namespace('postman', description='Postman export.')
 
