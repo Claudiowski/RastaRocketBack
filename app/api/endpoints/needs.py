@@ -14,7 +14,7 @@ from app.elastic import get_user_from_id, get_need_from_id, delete_need_from_id,
 from app.models import User
 from app.utils import allowed_file
 from ..parsers import need_parser, upload_parser
-from ..serializers.needs import need_post, need_put, need_minimal, need_data_container
+from ..serializers.needs import need_post, need_put, need_minimal, need_data_container, need_content
 
 ns = Namespace('needs', description='Needs related operations')
 
@@ -195,7 +195,7 @@ class NeedItem(Resource):
 class NeedContentCollection(Resource):
     decorators = [auth.login_required]
 
-    @ns.marshal_with(need_minimal, code=201, description='Content successfully uploaded.')
+    @ns.marshal_with(need_content, code=201, description='Content successfully uploaded.')
     @ns.doc(responses={
         400: 'Validation error'
     })

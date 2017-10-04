@@ -42,6 +42,12 @@ need_put = api.model('Need PUT', {
     'status': fields.String(required=False, description='Need status (Open, Win, Lost)', min_length=3, max_length=64)
 })
 
+need_content = api.model('Need Content', {
+    'id': fields.String(required=True, description='Content unique ID'),
+    'need': fields.String(reequired=True, description='Need unique ID'),
+    'filename': fields.String(required=True, description='Content filename')
+})
+
 need_data_container = api.model('Need DataContainer', {
     'needs': fields.List(fields.Nested(need_minimal))
 })
