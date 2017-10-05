@@ -148,6 +148,41 @@ class Need:
         else:
             self._start_at_latest = None
 
+        if hasattr(els_object, 'Description'):
+            self._description = els_object.Description
+        else:
+            self._description = ""
+
+        if hasattr(els_object, 'MonthDuration'):
+            self._month_duration = els_object.MonthDuration
+        else:
+            self._month_duration = -1
+
+        if hasattr(els_object, "WeekFrequency"):
+            self._week_frequency = els_object.WeekFrequency
+        else:
+            self._week_frequency = -1
+
+        if hasattr(els_object, "Rate"):
+            self._rate = els_object.Rate
+        else:
+            self._rate = -1
+
+        if hasattr(els_object, "Consultants"):
+            self._consultants = []
+            for consultant in els_object.Consultants:
+                self._consultants.append(consultant.Id)
+        else:
+            self._consultants = []
+
+        if hasattr(els_object, "SuccessKeys"):
+            self._success_keys = []
+            for key in els_object.SuccessKeys:
+                self._success_keys.append(key.Key)
+
+        else:
+            self._success_keys = []
+
     @property
     def id(self):
         """
@@ -228,6 +263,25 @@ class Need:
         """
         return self._status
 
+    @property
+    def description(self):
+        return self._description
+
+    @property
+    def month_duration(self):
+        return self._month_duration
+
+    @property
+    def week_frequency(self):
+        return self._week_frequency
+
+    @property
+    def consultants(self):
+        return self._consultants
+
+    @property
+    def success_keys(self):
+        return self._success_keys
 
 class Customer:
     """

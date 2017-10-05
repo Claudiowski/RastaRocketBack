@@ -14,7 +14,7 @@ from app.elastic import get_user_from_id, get_need_from_id, delete_need_from_id,
 from app.models import User
 from app.utils import allowed_file
 from ..parsers import need_parser, upload_parser
-from ..serializers.needs import need_post, need_put, need_minimal, need_data_container, need_content
+from ..serializers.needs import need_post, need_put, need_minimal, need_data_container, need_content, need_complete
 
 ns = Namespace('needs', description='Needs related operations')
 
@@ -137,7 +137,7 @@ class NeedCollection(Resource):
 class NeedItem(Resource):
     decorators = [auth.login_required]
 
-    @ns.marshal_with(need_minimal)
+    @ns.marshal_with(need_complete)
     def get(self, need_id):
         """
         Get need
@@ -149,6 +149,10 @@ class NeedItem(Resource):
 
         need.customer_obj = get_customer_from_id(need.customer)
         need.contact_obj = get_contact_from_id(need.contact)
+
+        need.consultants_obj = []
+        for consultant in need.consultants:
+            need.consultants_obj.append(get_consultant_from_id(consultant))
 
         return need
 
