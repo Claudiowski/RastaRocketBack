@@ -23,7 +23,7 @@ need_post = api.model('Need POST', {
     'contact': fields.String(required=True, description='Customer contact ID', min_length=3, max_length=64),
     'title': fields.String(required=True, description='Need title', min_length=3, max_length=64),
     'description': fields.String(required=True, description='Need description'),
-    'success_keys': fields.List(fields.String(description='Key of success', min_length=3, max_length=64),
+    'success_keys': fields.List(fields.String(description='Key of success', min_length=3),
                                 description='Keys of need success', max_items=3),
     'start_at_latest': fields.DateTime(dt_format='iso8601', required=False, description='Start at latest datetime'),
     'month_duration': fields.Float(required=False, description='Month duration', min=0),
