@@ -86,6 +86,7 @@ class NeedCollection(Resource):
 
         for need in needs:
             need.customer_obj = get_customer_from_id(need.customer)
+            need.contact_obj = get_contact_from_id(need.contact)
 
         return {'needs': needs}
 
@@ -121,6 +122,8 @@ class NeedCollection(Resource):
         data['author'] = g.user.id
 
         need = add_need_from_parameters(data)
+        need.customer_obj = get_customer_from_id(need.customer)
+        need.contact_obj = get_contact_from_id(need.contact)
 
         if not need:
             abort(400, error='Error during save need')
@@ -143,6 +146,9 @@ class NeedItem(Resource):
         need = get_need_from_id(need_id)
         if not need or need.author != g.user.id:
             abort(404)
+
+        need.customer_obj = get_customer_from_id(need.customer)
+        need.contact_obj = get_contact_from_id(need.contact)
 
         return need
 

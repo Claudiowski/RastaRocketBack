@@ -157,8 +157,8 @@ def add_need_from_parameters(parameters, index='rastarockets_needs'):
     :param index: Index name (optional)
     :type index: str
 
-    :return: Need ID created
-    :rtype: str|None
+    :return: Need created
+    :rtype: Need|None
     """
 
     body = {

@@ -2,7 +2,7 @@
 
 from flask_restplus import fields
 from app.api import api
-from .customers import customer_minimal
+from .customers import customer_minimal, contact_minimal
 
 need_minimal = api.model('Need Minimal', {
     'id': fields.String(required=True, description='Need unique ID'),
@@ -10,6 +10,7 @@ need_minimal = api.model('Need Minimal', {
     'customer': fields.String(required=True, description='Customer unique name', min_length=3, max_length=64),
     'customer_obj': fields.Nested(customer_minimal, required=True, description='Customer Object'),
     'contact': fields.String(required=True, description='Customer contact name', min_length=3, max_length=64),
+    'contact_obj': fields.Nested(customer_minimal, required=True, description='Customer Object'),
     'title': fields.String(required=True, description='Need title', min_length=3, max_length=64),
     'start_at_latest': fields.String(required=False, dt_format='iso8601', description='Need start at latest date'),
     'status': fields.String(required=True, description='Need status (open, win, lost)')
