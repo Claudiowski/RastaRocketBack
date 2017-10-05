@@ -136,10 +136,6 @@ class NeedCollection(Resource):
 
             msg.body = 'Need need added, see {0}'.format(need.id)
 
-            from app.tasks import send_async_email
-
-            send_async_email.delay(msg)
-
             return need, 201
 
 
