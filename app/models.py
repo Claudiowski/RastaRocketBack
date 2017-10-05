@@ -283,6 +283,10 @@ class Need:
     def success_keys(self):
         return self._success_keys
 
+    @property
+    def rate(self):
+        return self._rate
+
 class Customer:
     """
     Represent customer
