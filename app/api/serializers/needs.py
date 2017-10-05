@@ -48,7 +48,7 @@ need_complete = api.inherit('Need complete', need_minimal, {
 need_put = api.model('Need PUT', {
     'title': fields.String(required=False, description='Need title', min_length=3, max_length=64),
     'description': fields.String(required=False, description='Need description'),
-    'success_keys': fields.List(fields.String(description='Key of success', min_length=3, max_length=64),
+    'success_keys': fields.List(fields.String(description='Key of success', min_length=3),
                                 description='Keys of need success', max_items=3),
     'start_at_latest': fields.DateTime(dt_format='iso8601', required=False, description='Start at latest datetime'),
     'month_duration': fields.Float(required=False, description='Month duration', min=0),
