@@ -6,6 +6,7 @@ from datetime import datetime
 from flask import request, g, current_app, send_from_directory
 from flask_httpauth import HTTPTokenAuth
 from flask_restplus import Namespace, Resource, abort
+from flask.ext.mail import Message
 
 from app.elastic import get_user_from_id, get_need_from_id, delete_need_from_id, get_needs, get_customer_from_id, \
     get_contact_from_id, get_consultant_from_id, add_need_from_parameters, update_need, add_need_content, \
@@ -129,6 +130,16 @@ class NeedCollection(Resource):
             abort(400, error='Error during save need')
 
         else:
+
+            msg = Message('Need need added',
+                          recipients=["a.verdier@outlook.fr"])
+
+            msg.body = 'Need need added, see {0}'.format(need.id)
+
+            from app.tasks import send_async_email
+
+            send_async_email.delay(msg)
+
             return need, 201
 
 

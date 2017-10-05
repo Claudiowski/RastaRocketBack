@@ -10,16 +10,18 @@ class Config:
     Base configuration
     """
     SECRET_KEY = os.environ.get('RASTAROCKET_SECRET_KEY') or 'djgkkfv44dfdfgd!'
+    CELERY_BROKER_URL = 'redis://localhost:6379/0'
+    CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
     TOKEN_EXPIRATION_TIME = 600
     RESTPLUS_SWAGGER_UI_DOC_EXPANSION = 'list'
     RESTPLUS_VALIDATE = True
-    SMTP_HOST = ''
-    SMTP_AUTH = True
-    SMTP_USERNAME = ''
-    SMTP_PASSWORD = ''
-    SMTP_SECURE = 'tls'
-    SMTP_PORT = 587
-    EMAIL_FROM = ''
+    MAIL_SERVER = 'smtp.googlemail.com'
+    MAIL_PORT = 465
+    MAIL_USE_TLS = False
+    MAIL_USE_SSL = True
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+    DEFAULT_SENDER = "gfi@workshop.com"
     ELS_HOST = 'localhost'
     ELS_PORT = 9200
     UPLOAD_FOLDER = os.path.join(basedir, 'upload')

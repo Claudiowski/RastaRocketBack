@@ -5,6 +5,7 @@ from app.api import api
 from .customers import customer_minimal, contact_minimal
 from .consultants import consultant_minimal
 
+
 need_minimal = api.model('Need Minimal', {
     'id': fields.String(required=True, description='Need unique ID'),
     'created_at': fields.DateTime(dt_format='iso8601', required=False, description='Need creation datetime'),

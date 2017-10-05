@@ -156,17 +156,17 @@ class Need:
         if hasattr(els_object, 'MonthDuration'):
             self._month_duration = els_object.MonthDuration
         else:
-            self._month_duration = -1
+            self._month_duration = 0
 
         if hasattr(els_object, "WeekFrequency"):
             self._week_frequency = els_object.WeekFrequency
         else:
-            self._week_frequency = -1
+            self._week_frequency = 0
 
         if hasattr(els_object, "Rate"):
             self._rate = els_object.Rate
         else:
-            self._rate = -1
+            self._rate = 0
 
         if hasattr(els_object, "Consultants"):
             self._consultants = []
