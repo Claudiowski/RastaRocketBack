@@ -84,6 +84,9 @@ class NeedCollection(Resource):
 
         needs = get_needs(start, size, g.user.id, title, status, customer_id)
 
+        for need in needs:
+            need.customer_obj = get_customer_from_id(need.customer)
+
         return {'needs': needs}
 
     @ns.marshal_with(need_minimal, code=201, description='Need successfully created.')
