@@ -20,6 +20,6 @@ python-dateutil==2.6.1
 pytz==2017.2
 redis==2.10.6
 six==1.11.0
-urllib3==1.22
+urllib3==1.26.5
 vine==1.1.4
 Werkzeug==0.12.2
